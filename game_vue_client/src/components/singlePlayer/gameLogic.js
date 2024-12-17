@@ -1,5 +1,5 @@
 const categories = ['c', 'p', 'o', 'e']; // Card categories
-const imageCount = 13; // Number of images in each category
+const imageCount = 10; // Number of images in each category
 
 export const generateBoard = (rows, cols) => {
   const totalCards = rows * cols;

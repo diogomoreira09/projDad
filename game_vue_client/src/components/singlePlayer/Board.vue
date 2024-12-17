@@ -34,18 +34,21 @@ const handleFlip = (rowIndex, colIndex) => {
     const firstCard = board.value[first.row][first.col];
     const secondCard = board.value[second.row][second.col];
 
-    // Check if the two flipped cards match
-    if (firstCard.image === secondCard.image) {
-      // Mark both cards as matched
-      matchedCards.value.push(first, second);
-      board.value[first.row][first.col].matched = true;
-      board.value[second.row][second.col].matched = true;
-    }
+
 
     setTimeout(() => {
+      // Check if the two flipped cards match
+      if (firstCard.image === secondCard.image) {
+        // Mark both cards as matched
+        matchedCards.value.push(first, second);
+        board.value[first.row][first.col].matched = true;
+        board.value[second.row][second.col].matched = true;
+      }
+
       revealedCards.value = [];
       waiting.value = false;
     }, 1000);
+
   } else {
     revealedCards.value = [card];
   }
@@ -55,17 +58,9 @@ const handleFlip = (rowIndex, colIndex) => {
 <template>
   <div class="board">
     <div v-for="(row, rowIndex) in board" :key="rowIndex" class="row">
-      <Card
-        v-for="(card, colIndex) in row"
-        :key="colIndex"
-        :image="card.image"
-        :isRevealed="
-          revealedCards.some((c) => c.row === rowIndex && c.col === colIndex) ||
-          matchedCards.some((c) => c.row === rowIndex && c.col === colIndex)
-        "
-        :isMatched="card.matched"
-        @flip="() => handleFlip(rowIndex, colIndex)"
-      />
+      <Card v-for="(card, colIndex) in row" :key="colIndex" :image="card.image" :isRevealed="revealedCards.some((c) => c.row === rowIndex && c.col === colIndex) ||
+        matchedCards.some((c) => c.row === rowIndex && c.col === colIndex)
+        " :isMatched="card.matched" @flip="() => handleFlip(rowIndex, colIndex)" />
     </div>
   </div>
 </template>

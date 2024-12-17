@@ -20,7 +20,7 @@ watch(
 </script>
 
 <template>
-  <div v-if="!isMatched" class="card" @click="emit('flip')"> <!-- Hide matched cards -->
+  <div :style="{ visibility: !isMatched ? 'visible' : 'hidden' }" class="card" @click="emit('flip')"> <!-- Hide matched cards -->
     <img
       v-if="flipped"
       :src="`/img/cards/${image}`"
