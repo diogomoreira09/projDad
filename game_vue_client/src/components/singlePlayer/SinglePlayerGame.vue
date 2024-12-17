@@ -1,81 +1,37 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
+import { generateBoard } from './gameLogic.js';
 import Board from './Board.vue';
 
-const boardSize = ref({ cols: 4, rows: 4 }); // Default board size
-const cardImages = ['card1.png', 'card2.png', 'card3.png', 'card4.png', 'card5.png', 'card6.png']; // Add your card images
-const gameStatus = ref(''); // Game status message
+// You can dynamically assign these values based on user selection.
+const rows = 4; // Example, replace with dynamic selection
+const cols = 4; // Example, replace with dynamic selection
 
-const updateBoardSize = (cols, rows) => {
-  boardSize.value = { cols, rows };
-};
+const board = ref([]); // Board state
+const revealed = ref([]); // Cards that are flipped
 
-const handleCardFlipped = (index) => {
-  // Logic for handling a card flip (if needed)
-};
+// Generate the board on mounted
+onMounted(() => {
+  board.value = generateBoard(rows, cols);
+});
 
-const handleStatusChanged = (status) => {
-  if (status === 'win') {
-    gameStatus.value = 'You won!';
+// Handle card flip logic
+const handleCardFlip = (row, col) => {
+  if (revealed.value.length < 2) {
+    revealed.value.push([row, col]);
   }
 };
-
-onMounted(() => {
-  boardSize.value = { cols: 4, rows: 4 }; // Initialize the default board
-});
 </script>
 
 <template>
-  <div class="memory-game">
-    <div class="button-group">
-      <button
-        @click="updateBoardSize(3, 4)"
-        class="w-36 h-12 leading-10 text-center rounded-xl border-none text-white bg-green-500 cursor-pointer hover:bg-green-600">
-        3x4
-      </button>
-      <button
-        @click="updateBoardSize(4, 4)"
-        class="w-36 h-12 leading-10 text-center rounded-xl border-none text-white bg-green-500 cursor-pointer hover:bg-green-600">
-        4x4
-      </button>
-      <button
-        @click="updateBoardSize(6, 6)"
-        class="w-36 h-12 leading-10 text-center rounded-xl border-none text-white bg-green-500 cursor-pointer hover:bg-green-600">
-        6x6
-      </button>
-    </div>
-
-    <Board
-      :cols="boardSize.cols"
-      :rows="boardSize.rows"
-      :cardImages="cardImages"
-      @cardFlipped="handleCardFlipped"
-      @statusChanged="handleStatusChanged"
-    />
-
-    <div v-if="gameStatus" class="status">
-      <p>{{ gameStatus }}</p>
-    </div>
+  <div class="game-container">
+    <Board :board="board" :revealed="revealed" :onCardFlip="handleCardFlip" />
   </div>
 </template>
 
-
 <style scoped>
-.button-group button {
-  width: 9rem; /* equivalent to w-36 */
-  height: 3rem; /* equivalent to h-12 */
-  font-size: 1rem; /* equivalent to leading-10 */
-  text-align: center;
-  background-color: #48bb78; /* equivalent to bg-green-500 */
-  color: white;
-  border-radius: 0.75rem; /* equivalent to rounded-xl */
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.button-group button:hover {
-  background-color: #38a169; /* equivalent to hover:bg-green-600 */
+.game-container {
+  max-width: 800px;
+  margin: 0 auto;
 }
 </style>
-

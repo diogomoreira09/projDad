@@ -1,53 +1,37 @@
-// useGameLogic.js
-import { ref } from 'vue';
-import { shuffleArray, generateCards } from './gameUtils';
+const categories = ['c', 'p', 'o', 'e']; // Card categories
+const imageCount = 13; // Number of images in each category
 
-export function useGameLogic(cols, rows) {
-  const cards = ref(generateCards(cols, rows)); // Create shuffled cards
-  const turns = ref(0);
-  const isGameWon = ref(false);
-  const pickedCard = ref(null);
-  const canFlip = ref(true);
+export const generateBoard = (rows, cols) => {
+  const totalCards = rows * cols;
+  const totalPairs = totalCards / 2; // Total pairs of cards needed
+  const cardImages = [];
 
-  const flipCard = (card) => {
-    if (!canFlip.value || card === pickedCard.value || card.flipped) return;
-  
-    card.flipped = true; // Flip the card
-  
-    if (pickedCard.value) {
-      canFlip.value = false;
-      turns.value++;
-  
-      if (pickedCard.value.imageId === card.imageId) {
-        pickedCard.value = null;
-        if (cards.value.every(c => c.flipped)) {
-          isGameWon.value = true;
-        }
-        canFlip.value = true;
-      } else {
-        setTimeout(() => {
-          pickedCard.value.flipped = false;
-          card.flipped = false;
-          pickedCard.value = null;
-          canFlip.value = true;
-        }, 1000);
-      }
-    } else {
-      pickedCard.value = card;
+  // Generate pairs of images for the board
+  for (let i = 0; i < totalPairs; i++) {
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    const number = Math.floor(Math.random() * imageCount) + 1;
+    const image = `${category}${number}.png`;
+
+    cardImages.push(image, image); // Push image twice to make a pair
+  }
+
+  // Shuffle the images to randomize their positions on the board
+  cardImages.sort(() => Math.random() - 0.5);
+
+  // Create a 2D board array with shuffled card images
+  const board = [];
+  let index = 0;
+  for (let i = 0; i < rows; i++) {
+    const row = [];
+    for (let j = 0; j < cols; j++) {
+      row.push({
+        image: cardImages[index],
+        matched: false, // Initially, no card is matched
+      });
+      index++;
     }
+    board.push(row);
+  }
+
+  return board;
 };
-
-
-  const revealHint = () => {
-    // Logic for revealing a hint (example: reveal a pair of cards)
-    const revealed = cards.value.find(c => !c.flipped);
-    if (revealed) {
-      revealed.flipped = true;
-      setTimeout(() => {
-        revealed.flipped = false;
-      }, 1000);
-    }
-  };
-
-  return { cards, turns, isGameWon, flipCard, revealHint };
-}

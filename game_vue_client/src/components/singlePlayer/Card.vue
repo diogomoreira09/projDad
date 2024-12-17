@@ -1,47 +1,52 @@
 <script setup>
+import { ref, watch } from 'vue';
+
 const props = defineProps({
-  card: {
-    type: Object,
-    required: true
-  }
+  image: String,
+  isRevealed: Boolean,
+  isMatched: Boolean, // New prop to check if the card is matched
 });
 
 const emit = defineEmits(['flip']);
+const flipped = ref(false);
 
-const flip = () => {
-  if (!props.card.flipped) {
-    emit('flip', props.card);
+// Watch the prop `isRevealed` to flip the card
+watch(
+  () => props.isRevealed,
+  (newVal) => {
+    flipped.value = newVal;
   }
-};
+);
 </script>
 
 <template>
-  <div class="card" @click="flip">
-    <!-- Display card back when not flipped -->
-    <div v-if="!card.flipped">
-      <img src="/img/cards/semFace.png" alt="Card back" />
-    </div>
-    <!-- Display the front image when flipped -->
-    <div v-else>
-      <img :src="`/img/cards/${card.imageId}.png`" alt="Card front" />
-    </div>
+  <div v-if="!isMatched" class="card" @click="emit('flip')"> <!-- Hide matched cards -->
+    <img
+      v-if="flipped"
+      :src="`/img/cards/${image}`"
+      alt="Card"
+      class="card-img"
+    />
+    <img
+      v-else
+      src="/img/cards/semFace.png"
+      alt="Back"
+      class="card-img"
+    />
   </div>
 </template>
 
 <style scoped>
 .card {
-  width: 100px;
-  height: 150px;
+  width: 80px;
+  height: 100px;
+  perspective: 1000px;
   cursor: pointer;
-  background-color: #ddd;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.card img {
+.card-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  border-radius: 8px;
 }
 </style>

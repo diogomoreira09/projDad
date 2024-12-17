@@ -1,74 +1,85 @@
 <script setup>
-import { ref } from 'vue'
-import Cell from './Cell.vue'
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import Card from './Card.vue';
+import { generateBoard } from './gameLogic'; // Import the game logic for board generation
 
-// Props for dynamically passing board data and game logic from the parent
-const props = defineProps({
-  board: Array, // The board state (2D array of cards)
-  revealed: Array, // List of revealed card indices
-  onCardFlip: Function, // Function to handle card flips
-})
+// Get board size from route parameters
+const route = useRoute();
+const rows = parseInt(route.params.rows);
+const cols = parseInt(route.params.cols);
 
-// Expose board data and actions for testing or parent component access
-defineExpose({
-  board: props.board,
-})
+// Game state
+const board = ref([]);
+const revealedCards = ref([]);
+const matchedCards = ref([]); // Store matched cards
+const waiting = ref(false);
 
-// Helper function to check if a card is revealed or matched
-const isRevealed = (row, col) => {
-  return props.revealed.some(([r, c]) => r === row && c === col)
-}
+// Generate the board when the component is mounted
+onMounted(() => {
+  board.value = generateBoard(rows, cols); // Use the function from gameLogic.js to generate the board
+});
+
+// Card flip logic
+const handleFlip = (rowIndex, colIndex) => {
+  if (waiting.value) return;
+
+  const card = { row: rowIndex, col: colIndex };
+
+  if (revealedCards.value.length === 1) {
+    revealedCards.value.push(card);
+    waiting.value = true;
+
+    const [first, second] = revealedCards.value;
+    const firstCard = board.value[first.row][first.col];
+    const secondCard = board.value[second.row][second.col];
+
+    // Check if the two flipped cards match
+    if (firstCard.image === secondCard.image) {
+      // Mark both cards as matched
+      matchedCards.value.push(first, second);
+      board.value[first.row][first.col].matched = true;
+      board.value[second.row][second.col].matched = true;
+    }
+
+    setTimeout(() => {
+      revealedCards.value = [];
+      waiting.value = false;
+    }, 1000);
+  } else {
+    revealedCards.value = [card];
+  }
+};
 </script>
+
 <template>
-    <div class="game-container">
-      <h1 class="text-3xl pb-4">Memory Game</h1>
-      
-      <!-- Buttons to choose board size -->
-      <div class="button-group">
-        <button @click="setBoardSize(3, 4)" class="board-size-btn">3x4</button>
-        <button @click="setBoardSize(4, 4)" class="board-size-btn">4x4</button>
-        <button @click="setBoardSize(6, 6)" class="board-size-btn">6x6</button>
-      </div>
-  
-      <!-- Render the Board component -->
-      <Board 
-        :board="board" 
-        :revealed="revealed" 
-        :onCardFlip="handleCardFlip" 
+  <div class="board">
+    <div v-for="(row, rowIndex) in board" :key="rowIndex" class="row">
+      <Card
+        v-for="(card, colIndex) in row"
+        :key="colIndex"
+        :image="card.image"
+        :isRevealed="
+          revealedCards.some((c) => c.row === rowIndex && c.col === colIndex) ||
+          matchedCards.some((c) => c.row === rowIndex && c.col === colIndex)
+        "
+        :isMatched="card.matched"
+        @flip="() => handleFlip(rowIndex, colIndex)"
       />
     </div>
-  </template>
-  
-  <style scoped>
-  .button-group {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .board-size-btn {
-    padding: 10px 20px;
-    background: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .board-size-btn:hover {
-    background: #45a049;
-  }
-  </style>
-  
-  
-  <style scoped>
-  .board-grid {
-    display: grid;
-    gap: 10px; /* Space between cells */
-    margin: 20px auto;
-    max-width: 90%;
-  }
-  </style>
-  
+  </div>
+</template>
+
+<style scoped>
+.board {
+  display: grid;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 500px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+</style>
