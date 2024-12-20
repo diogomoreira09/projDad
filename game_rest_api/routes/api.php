@@ -7,6 +7,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\UserController;
 
 
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
 Route::get('/games/total', [GameController::class, 'totalGames']);
@@ -24,4 +25,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/games', [GameController::class, 'store']);
     Route::patch('/games/{game}', [GameController::class, 'updateStatus']);
     Route::delete('/games/{game}', [GameController::class, 'destroy']);
+    // Rotas protegidas por autenticação
+    Route::get('/user', [UserController::class, 'profile']);
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::put('/user', [UserController::class, 'update']);
+    Route::delete('/user', [UserController::class, 'destroy']);
 });

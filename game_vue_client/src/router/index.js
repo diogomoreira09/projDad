@@ -4,6 +4,8 @@ import MultiPlayerGames from '@/components/multiPlayer/MultiPlayerGames.vue';
 import Login from '@/components/auth/Login.vue';
 import SelectBoard from '@/components/singlePlayer/SelectBoard.vue';
 import Board from '@/components/singlePlayer/Board.vue'; // Import the Board.vue component
+import Register from '@/components/auth/Register.vue';
+import Profile from '@/components/user/Profile.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
@@ -34,6 +36,17 @@ const router = createRouter({
       name: 'board',
       component: Board,
       props: true, // Pass route parameters as props to the component
+    },
+    { 
+      path: '/register', 
+      name: 'register', 
+      component: Register 
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile,
+      meta: { requiresAuth: true }, // Protegido por autenticação
     },
   ],
 });

@@ -21,4 +21,8 @@ axios.defaults.baseURL = 'http://localhost/api'
 
 app.component('ErrorMessage', ErrorMessage)
 
+// Crie a instância do Pinia e a use no app
+const pinia = createPinia();
+app.use(pinia);
+
 app.mount('#app')

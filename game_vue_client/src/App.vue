@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useTemplateRef, provide, inject } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useChatStore } from '@/stores/chat';
 import Toaster from '@/components/ui/toast/Toaster.vue';
@@ -25,9 +26,12 @@ const alertDialog = useTemplateRef<InstanceType<typeof GlobalAlertDialog>>('aler
 const inputDialog = useTemplateRef<InstanceType<typeof GlobalInputDialog>>('input-dialog');
 provide('inputDialog', inputDialog);
 
+const router = useRouter();
+
 // Logout functionality
 const logoutConfirmed = () => {
   storeAuth.logout();
+  router.push({ name: 'login' });
 };
 
 const logout = () => {
@@ -80,7 +84,7 @@ const handleMessageFromInputDialog = (message) => {
     <!-- Header and User Info -->
     <div>
       <h1 class="text-4xl">Memory Game</h1>
-      <p class="pt-1 pb-4 text-xl">{{ storeAuth.user ? 'User: ' + storeAuth.userFirstLastName : '' }}</p>
+      <!-- <p class="pt-1 pb-4 text-xl">{{ storeAuth.user ? 'User: ' + storeAuth.userFirstLastName : '' }}</p> -->
     </div>
 
     <!-- Navigation Bar -->
@@ -104,11 +108,29 @@ const handleMessageFromInputDialog = (message) => {
 
       <RouterLink
         v-show="!storeAuth.user"
+        :to="{ name: 'register' }"
+        class="w-24 h-10 leading-10 text-center rounded-t-xl border-none text-white select-none bg-gray-400 cursor-pointer hover:bg-gray-500"
+        active-class="bg-gray-800 hover:bg-gray-800"
+      >
+        Regiter
+      </RouterLink>
+
+      <RouterLink
+        v-show="!storeAuth.user"
         :to="{ name: 'login' }"
         class="w-24 h-10 leading-10 text-center rounded-t-xl border-none text-white select-none bg-gray-400 cursor-pointer hover:bg-gray-500"
         active-class="bg-gray-800 hover:bg-gray-800"
       >
         Login
+      </RouterLink>
+
+      <RouterLink
+        v-show="storeAuth.user"
+        :to="{ name: 'profile' }"
+        class="w-24 h-10 leading-10 text-center rounded-t-xl border-none text-white select-none bg-gray-400 cursor-pointer hover:bg-gray-500"
+        active-class="bg-gray-800 hover:bg-gray-800"
+      >
+        Profile
       </RouterLink>
 
       <button

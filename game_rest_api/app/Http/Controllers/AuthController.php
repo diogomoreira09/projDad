@@ -4,12 +4,55 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+
+    public function register(Request $request)
+    {
+        $validatedData = $request->validated();
+
+        $user = new User();
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->nickname = $validatedData['nickname'];
+        $user->blocked = false;
+        $user->brain_coins_balance = $validatedData['type'] === 'A' ? 0 : 10;
+        $user->password = Hash::make($request->password);
+        $user->type = $validatedData['type'];
+
+        if ($user->save()) {
+
+            if ($request->photo_filename) {
+            $base64Image = $request->photo_filename;
+
+            $base64Image = preg_replace('#^data:image/\w+;base64,#i', '', $base64Image);
+            $imageData = base64_decode($base64Image);
+
+            $extension = 'png';
+            if (str_starts_with($request->photo_filename, 'data:image/jpeg;base64,')) {
+                 $extension = 'jpg';
+            }
+
+            $filename = $user->id . '_' . uniqid() . '.' . $extension;
+            Storage::disk('public')->put('photos/' . $filename, $imageData);
+
+            $user->photo_filename = $filename;
+            $user->save();
+            }
+
+            return new UserResource($user);
+        }
+
+        return response()->json(['message' => 'User registered successfully'], 201);
+    }
+
+    
     private function purgeExpiredTokens()
     {
         // Only deletes if token expired 2 hours ago
