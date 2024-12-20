@@ -6,7 +6,10 @@ import SelectBoard from '@/components/singlePlayer/SelectBoard.vue';
 import Board from '@/components/singlePlayer/Board.vue'; // Import the Board.vue component
 import Register from '@/components/auth/Register.vue';
 import Profile from '@/components/user/Profile.vue';
+import GameHistory from '@/components/game/GameHistory.vue';
+import TopScores from '@/components/game/TopScores.vue';
 import { useAuthStore } from '@/stores/auth';
+import Statistics from '@/components/statistics/Statistics.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +39,21 @@ const router = createRouter({
       name: 'board',
       component: Board,
       props: true, // Pass route parameters as props to the component
+    },
+    {
+      path: '/games/history',
+      name: 'gameHistory',
+      component: GameHistory,
+    },
+    {
+      path: '/games/top-scores',
+      name: 'topScores',
+      component: TopScores,
+    },
+    { 
+      path: '/statistics', 
+      name: 'statistics', 
+      component: Statistics 
     },
     { 
       path: '/register', 

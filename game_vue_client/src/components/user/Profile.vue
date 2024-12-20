@@ -3,7 +3,7 @@
       <!-- Formulário de Atualização de Perfil -->
       <form @submit.prevent="updateProfile" class="space-y-6 bg-white p-6 rounded-lg shadow-lg">
         <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
+          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
           <input
             v-model="name"
             type="text"
@@ -14,7 +14,7 @@
         </div>
   
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
           <input
             v-model="email"
             type="email"
@@ -36,7 +36,7 @@
         </div>
   
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Nova Senha (opcional)</label>
+          <label for="password" class="block text-sm font-medium text-gray-700">New Password (optional)</label>
           <input
             v-model="password"
             type="password"
@@ -47,7 +47,7 @@
         </div>
   
         <div>
-          <label for="photo" class="block text-sm font-medium text-gray-700">Fotografia</label>
+          <label for="photo" class="block text-sm font-medium text-gray-700">Foto</label>
           <input
             ref="photo"
             type="file"
@@ -65,7 +65,7 @@
           type="submit"
           class="w-full py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
         >
-          Salvar Alterações
+          Save
         </button>
       </form>
   
@@ -75,7 +75,7 @@
           @click="openConfirmModal"
           class="w-full py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
         >
-          Remover Conta
+          Remove Account
         </button>
       </div>
   
@@ -144,9 +144,10 @@
         formData.append("nickname", this.nickname);
         if (this.password) {
           formData.append("password", this.password);
+          formData.append("password_confirmation", this.password);
         }
         if (this.$refs.photo.files[0]) {
-          formData.append("photo", this.$refs.photo.files[0]);
+          formData.append("photo_filename", this.$refs.photo.files[0]);
         }
   
         try {
@@ -178,7 +179,7 @@
         showModal.value = false;
       };
   
-      // Função para deletar a conta
+      
       const deleteAccount = async () => {
         try {
           await axios.delete("/user", {

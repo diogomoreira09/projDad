@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="register" class="space-y-4 max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
         <input
           v-model="name"
           id="name"
@@ -13,7 +13,7 @@
       </div>
   
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
         <input
           v-model="email"
           id="email"
@@ -25,24 +25,12 @@
       </div>
   
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
         <input
           v-model="password"
           id="password"
           type="password"
           placeholder="Senha"
-          class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-  
-      <div>
-        <label for="passwordConfirmation" class="block text-sm font-medium text-gray-700">Confirme a Senha</label>
-        <input
-          v-model="passwordConfirmation"
-          id="passwordConfirmation"
-          type="password"
-          placeholder="Confirme a Senha"
           class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
@@ -65,7 +53,7 @@
           type="submit"
           class="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Registrar
+          Register
         </button>
       </div>
     </form>
@@ -80,10 +68,8 @@
         name: "",
         email: "",
         password: "",
-        passwordConfirmation: "",
         nickname: "",
-        // O tipo é agora fixado como "player"
-        type: "player",
+        type: "P",
       };
     },
     methods: {
@@ -93,10 +79,11 @@
             name: this.name,
             email: this.email,
             password: this.password,
-            password_confirmation: this.passwordConfirmation,
-            nickname: this.nickname,
-            type: this.type, // O tipo "player" é automaticamente enviado
+            nickname: this.nickname,    
+            type: "P", // O tipo "player" é automaticamente enviado
           });
+          console.log("Dados enviados:", userData);
+
           this.$router.push("/login"); // Redireciona para a página de login
         } catch (error) {
           console.error(error);

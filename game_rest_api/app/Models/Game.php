@@ -11,7 +11,9 @@ class Game extends Model
         'status',
         'player1_id',
         'player2_id',
-        'winner_id'
+        'winner_id',
+        'created_user_id',
+        'winner_user_id',
     ];
 
     public function player1(): BelongsTo
@@ -29,4 +31,13 @@ class Game extends Model
         return $this->belongsTo(User::class, 'winner_id');
     }
 
+    public function createdUser()
+    {
+        return $this->belongsTo(User::class, 'created_user_id');
+    }
+
+    public function winnerUser()
+    {
+        return $this->belongsTo(User::class, 'winner_user_id');
+    }
 }

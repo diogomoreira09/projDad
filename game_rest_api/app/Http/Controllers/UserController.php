@@ -31,6 +31,7 @@ class UserController extends Controller
 
     public function update(Request $request) {
 
+
         // Obtenha o usuário autenticado
         $user = Auth::user();
 
@@ -39,15 +40,22 @@ class UserController extends Controller
             'email' => 'string|email|max:255|unique:users,email,' . $request->user()->id,
             'nickname' => 'string|max:50|unique:users,nickname,' . $request->user()->id,
             'password' => 'string|min:8|nullable',
-            'photo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo_filename' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = $request->user();
 
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $photoPath = $photo->store('profile_photos', 'public');
-            $user->photo_filename = $photoPath;
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->nickname = $validated['nickname'];
+
+        if (!empty($validated['password'])) {
+            $user->password = bcrypt($validated['password']);
+        }
+
+        if ($request->hasFile('photo_filename')) {
+            $path = $request->file('photo_filename')->store('photos', 'public');
+            $user->photo = $path;
         }
 
         $user->update(array_filter($validated, fn($value) => !is_null($value)));

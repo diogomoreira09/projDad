@@ -15,44 +15,34 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validatedData = $request->validated();
+        // Validação dos campos, removendo o campo 'type' porque será fixo
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed|min:8',
+            'nickname' => 'required|string|max:255|unique:users',
+        ]);
 
-        $user = new User();
-        $user->name = $validatedData['name'];
-        $user->email = $validatedData['email'];
-        $user->nickname = $validatedData['nickname'];
-        $user->blocked = false;
-        $user->brain_coins_balance = $validatedData['type'] === 'A' ? 0 : 10;
-        $user->password = Hash::make($request->password);
-        $user->type = $validatedData['type'];
+        try {
+            // Criação do usuário com o tipo fixo como 'player'
+            User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'nickname' => $validated['nickname'],
+                'type' => 'P', // Tipo fixo definido aqui
+            ]);
 
-        if ($user->save()) {
-
-            if ($request->photo_filename) {
-            $base64Image = $request->photo_filename;
-
-            $base64Image = preg_replace('#^data:image/\w+;base64,#i', '', $base64Image);
-            $imageData = base64_decode($base64Image);
-
-            $extension = 'png';
-            if (str_starts_with($request->photo_filename, 'data:image/jpeg;base64,')) {
-                 $extension = 'jpg';
-            }
-
-            $filename = $user->id . '_' . uniqid() . '.' . $extension;
-            Storage::disk('public')->put('photos/' . $filename, $imageData);
-
-            $user->photo_filename = $filename;
+            return response()->json(['message' => 'Usuário registrado com sucesso'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro interno do servidor'], 500);
             $user->save();
             }
 
             return new UserResource($user);
         }
 
-        return response()->json(['message' => 'User registered successfully'], 201);
-    }
 
-    
     private function purgeExpiredTokens()
     {
         // Only deletes if token expired 2 hours ago

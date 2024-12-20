@@ -12,11 +12,28 @@ use App\Http\Requests\GameStoreRequest;
 use App\Http\Resources\GameDetailedResource;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Board;
+use Illuminate\Support\Facades\Auth;
 
 
 
 class GameController extends Controller
 {
+
+
+
+    public function gameHistory()
+    {
+        $user = Auth::user();
+
+        $games = Game::where('created_user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12)
+            ->get();
+
+        return response()->json($games);
+    }
+
+
     public function index(FilterGamesRequest $request)
     {
         $filterData = $request->validated();
