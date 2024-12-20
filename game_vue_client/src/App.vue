@@ -7,6 +7,7 @@ import Toaster from '@/components/ui/toast/Toaster.vue';
 import GlobalAlertDialog from '@/components/common/GlobalAlertDialog.vue';
 import GlobalInputDialog from '@/components/common/GlobalInputDialog.vue';
 
+
 // Define the socket type explicitly
 interface Socket {
   on(event: string, callback: Function): void;
@@ -22,6 +23,7 @@ const socket = inject('socket') as Socket;  // Assert socket type
 // Dialog references for logout and chat input
 const alertDialog = useTemplateRef<InstanceType<typeof GlobalAlertDialog>>('alert-dialog');
 const inputDialog = useTemplateRef<InstanceType<typeof GlobalInputDialog>>('input-dialog');
+provide('inputDialog', inputDialog);
 
 // Logout functionality
 const logoutConfirmed = () => {
@@ -39,22 +41,32 @@ const logout = () => {
 };
 
 // Handle private messages
-let userDestination: any = null;
+let userDestination = null
 socket.on('privateMessage', (messageObj) => {
   userDestination = messageObj.user;
-  inputDialog.value?.open(
-    handleMessageFromInputDialog,
-    `Message from ${messageObj.user.name}`,
-    `This is a private message sent by ${messageObj?.user?.name}!`,
-    'Reply Message',
-    '',
-    'Close',
-    'Reply',
-    messageObj.message
-  );
+
+  // Ensure the input dialog is ready before trying to open it
+  if (inputDialog?.value) {
+    inputDialog.value.open(
+      (replyMessage) => {
+        // This function gets triggered when the user submits their reply
+        storeChat.sendPrivateMessageToUser(userDestination, replyMessage);
+      },
+      'Private Message from ' + (messageObj.user.name), // Title
+      'You received a private message:', // Description
+      'Type your reply here', // Input label
+      '', // Initial input value (empty for now)
+      'Close', // Cancel button text
+      'Reply', // Action button text
+      messageObj.message // Main content (the received message)
+    );
+  } else {
+    console.error('Input dialog is not initialized');
+  }
 });
 
-const handleMessageFromInputDialog = (message: string) => {
+
+const handleMessageFromInputDialog = (message) => {
   storeChat.sendPrivateMessageToUser(userDestination, message);
 };
 </script>

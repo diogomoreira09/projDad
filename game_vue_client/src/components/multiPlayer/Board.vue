@@ -17,10 +17,11 @@ const playPieceOfBoard = (idx) => {
 </script>
 
 <template>
-    <div class="grid grid-cols-3 border divide-y divide-x">
-        <Cell v-for="(piece, idx) in board" :key="idx" 
-                :piece="piece" :index="idx" 
-                @play="playPieceOfBoard">
-        </Cell>
+    <div class="board">
+      <div v-for="(row, rowIndex) in board" :key="rowIndex" class="row">
+        <Card v-for="(card, colIndex) in row" :key="colIndex" :image="card.image" :isRevealed="revealedCards.some((c) => c.row === rowIndex && c.col === colIndex) ||
+          matchedCards.some((c) => c.row === rowIndex && c.col === colIndex)
+          " :isMatched="card.matched" @flip="() => handleFlip(rowIndex, colIndex)" />
+      </div>
     </div>
-</template>
+  </template>

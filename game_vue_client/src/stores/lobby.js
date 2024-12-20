@@ -4,7 +4,6 @@ import axios from 'axios'
 import { useErrorStore } from '@/stores/error'
 import { useAuthStore } from '@/stores/auth'
 
-
 export const useLobbyStore = defineStore('lobby', () => {
     const storeAuth = useAuthStore()
     const storeError = useErrorStore()
@@ -73,9 +72,11 @@ export const useLobbyStore = defineStore('lobby', () => {
             const newGameOnDB = APIresponse.data.data
             newGameOnDB.player1SocketId = response.player1SocketId
             newGameOnDB.player2SocketId = response.player2SocketId
-            // After adding the game to the DB emit a message to the server to start the game
+
+            // After adding the game to the DB, emit a message to the server to start the game
             socket.emit('startGame', newGameOnDB, (startedGame) => {
                 console.log('Game has started', startedGame)
+                // Optionally, navigate to the game page or update the UI
             })
         })
     }
@@ -87,7 +88,7 @@ export const useLobbyStore = defineStore('lobby', () => {
     
     // Whether the current user can join a specific game from the lobby
     const canJoinGame = (game) => {
-        return storeAuth.user && game.player1.id !== storeAuth.userId
+        return storeAuth.user && game.player1.id !== storeAuth.userId && !game.player2
     }
 
     return {

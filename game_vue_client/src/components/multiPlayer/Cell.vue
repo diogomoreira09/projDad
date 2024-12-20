@@ -8,8 +8,8 @@ const play = () => {
 </script>
 
 <template>
-    <div class="grow">
-        <img :src="'img/' + piece + '.png'" alt="Tictactoe piece" class="w-full h-full"
-            @click.prevent="play">
+    <div class="cell">
+      <div v-if="card" class="card revealed">{{ card }}</div>
+      <div v-else class="card hidden"></div>
     </div>
-</template>
+  </template>

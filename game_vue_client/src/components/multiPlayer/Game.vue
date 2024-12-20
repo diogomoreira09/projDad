@@ -83,15 +83,15 @@ const statusGameMessage = computed(() => {
     switch (props.game.gameStatus) {
         case null:
         case 0:
-            const figure = props.game.currentPlayer === 1 ? '(cross)' : '(circle)'
-            return currentUserTurn.value ? 'Your turn ' + figure : 'Opponent turn ' + figure
+            return currentUserTurn.value ? 'Your turn' : 'Opponent turn'
         case 1:
+            return storeGames.playerNumberOfCurrentUser(props.game) == props.game.gameStatus ? 'You win' : 'You lose'
         case 2:
-            return storeGames.playerNumberOfCurrentUser(props.game) == props.game.gameStatus ? 'You won' : 'You lost'
+            return storeGames.playerNumberOfCurrentUser(props.game) == props.game.gameStatus ? 'You lose' : 'You win'
         case 3:
             return 'Draw'
         default:
-            return 'Not started!'
+            return 'Game ended'
     }
 })
 

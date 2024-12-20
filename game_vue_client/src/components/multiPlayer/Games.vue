@@ -8,6 +8,7 @@ const storeGames = useGamesStore()
 onMounted(() => {
     storeGames.fetchPlayingGames()
 })
+
 </script>
 
 <template>
