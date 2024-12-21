@@ -104,7 +104,7 @@ const handleMessageFromInputDialog = (message) => {
         Multi Player
       </RouterLink>
 
-      <RouterLink
+      <RouterLink v-if="storeAuth.user"
         :to="{ name: 'gameHistory' }"
         class="w-36 h-10 leading-10 text-center rounded-t-xl border-none text-white select-none bg-gray-400 cursor-pointer hover:bg-gray-500"
         active-class="bg-gray-800 hover:bg-gray-800"
@@ -112,7 +112,7 @@ const handleMessageFromInputDialog = (message) => {
         Game History
       </RouterLink>
 
-      <RouterLink
+      <RouterLink 
         :to="{ name: 'topScores' }"
         class="w-36 h-10 leading-10 text-center rounded-t-xl border-none text-white select-none bg-gray-400 cursor-pointer hover:bg-gray-500"
         active-class="bg-gray-800 hover:bg-gray-800"
@@ -120,7 +120,7 @@ const handleMessageFromInputDialog = (message) => {
         Top Scores
       </RouterLink>
 
-      <RouterLink
+      <RouterLink 
         :to="{ name: 'statistics' }"
         class="w-36 h-10 leading-10 text-center rounded-t-xl border-none text-white select-none bg-gray-400 cursor-pointer hover:bg-gray-500"
         active-class="bg-gray-800 hover:bg-gray-800"
@@ -146,6 +146,15 @@ const handleMessageFromInputDialog = (message) => {
         active-class="bg-gray-800 hover:bg-gray-800"
       >
         Login
+      </RouterLink>
+
+      <RouterLink
+        v-show="storeAuth.user"
+        :to="{ name: 'transactions' }"
+        class="w-24 h-10 leading-10 text-center rounded-t-xl border-none text-white select-none bg-gray-400 cursor-pointer hover:bg-gray-500"
+        active-class="bg-gray-800 hover:bg-gray-800"
+      >
+        Transactions
       </RouterLink>
 
       <RouterLink

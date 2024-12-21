@@ -10,6 +10,7 @@ import GameHistory from '@/components/game/GameHistory.vue';
 import TopScores from '@/components/game/TopScores.vue';
 import { useAuthStore } from '@/stores/auth';
 import Statistics from '@/components/statistics/Statistics.vue';
+import Transactions from '@/components/user/Transactions.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,6 +55,11 @@ const router = createRouter({
       path: '/statistics', 
       name: 'statistics', 
       component: Statistics 
+    },
+    { 
+      path: '/transactions', 
+      name: 'transactions', 
+      component: Transactions
     },
     { 
       path: '/register', 

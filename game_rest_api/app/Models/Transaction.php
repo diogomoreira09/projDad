@@ -29,4 +29,17 @@ class Transaction extends Model
     {
         return $this->belongsTo(Game::class);
     }
+
+    public function getTransactions()
+{
+    $user = auth()->user();
+
+    $transactions = Transaction::where('user_id', $user->id)
+        ->orderBy('transaction_datetime', 'desc')
+        ->get();
+
+    return response()->json($transactions);
+}
+
+    
 }
