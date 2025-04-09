@@ -1,20 +1,4 @@
-TODO:
-
--G1. USER REGISTRATION, AUTHENTICATION, PROFILE, END SESSION, ACCOUNT
-REMOVAL
-
--G2. BRAIN COINS AND TRANSACTIONS
-
--G3. SINGLE-PLAYER GAMES
-
--G4. MULTIPLAYER GAMES
-
--G5. GAME HISTORY AND SCORING BOARDS
-
--G6. ADMINISTRATION
-
--G7. STATISTICS
-
--G8. CUSTOM FEATURES AND IMPLEMENTATION DETAILS 
-
-
+Distributed Applications Development project: 
+  This project’s objective is to implement a single-page application (SPA) for the "Memory Game"
+platform, using Vue.js framework for the development of the web client, a Restful API server and
+a WebSocket server.
